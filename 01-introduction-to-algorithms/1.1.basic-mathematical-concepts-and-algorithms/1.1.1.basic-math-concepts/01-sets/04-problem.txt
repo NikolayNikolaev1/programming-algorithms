@@ -1,0 +1,12 @@
+* - operation
+
+(A*B = B*A) - symmetric operation
+
+|| - unification
+&& - intersection
++ - symmetric difference
+
+A||B = B||A
+А&&B = B&&A
+А\B != B\A
+A+B = B+A
