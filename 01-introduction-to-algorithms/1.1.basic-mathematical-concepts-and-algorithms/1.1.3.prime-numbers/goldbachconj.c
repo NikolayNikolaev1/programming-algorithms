@@ -2,27 +2,78 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-void printPrimesOfEvenSum(int n);
+void printPrimesOfEvenSum(unsigned long n);
+void printUniquePrimesOfSum(unsigned long n);
+void getPrimesOfSum(unsigned long sum, unsigned long* n, unsigned long* m);
+void getUniquePrimesOfSum(unsigned long sum, unsigned long* firstPrime, unsigned long* secondPrime, unsigned long* thirdPrime);
 bool isPrime(unsigned long n);
 
 int main() {
-    int n = 523656;
+    unsigned long n = 19;
     printPrimesOfEvenSum(n);
+	printUniquePrimesOfSum(n);
 	
     return 0;
 }
 
-void printPrimesOfEvenSum(int n) {
+void printPrimesOfEvenSum(unsigned long n) {
     if (n == 2 || n % 2 != 0) {
-        printf("Number should be even and bigger than 2.");
+        printf("Number should be even and bigger than 2.\n");
         return;
     }
     
-	for (int prime = n - 2; prime >= (int)floor(n/2); prime--)
-		if (isPrime(prime) && isPrime(n - prime)) {
-			printf("%d + %d = %d", prime, n - prime, n);
-			return;
+	unsigned long firstNum, secondNum;
+	getPrimesOfSum(n, &firstNum, &secondNum);
+	printf("%d + %d = %d\n", firstNum, secondNum, n);
+}
+
+void printUniquePrimesOfSum(unsigned long n) {
+	const int MIN_N = 18;
+	
+    if (n < MIN_N) {
+        printf("Number should be bigger than %d.\n", MIN_N-1);
+        return;
+    }
+	
+	unsigned long firstNum, secondNum, thirdNum, sum;
+	
+	getUniquePrimesOfSum(n, &firstNum, &secondNum, &thirdNum);
+	
+	printf("%d + %d + %d = %d\n", firstNum, secondNum, thirdNum, n);
+}
+
+void getPrimesOfSum(unsigned long sum, unsigned long* n, unsigned long* m) {
+	for (unsigned long prime = sum - 2; prime >= 2; prime--)
+		if (isPrime(prime) && isPrime(sum - prime)) {
+			*n = prime;
+			*m = sum - prime;
+			break;
 		}
+}
+
+void getUniquePrimesOfSum(
+	unsigned long sum,
+	unsigned long* firstPrime,
+	unsigned long* secondPrime,
+	unsigned long* thirdPrime) {
+	for (int i = 5; i < sum; i++) {
+		if (!isPrime(i)) continue;
+		
+		for (int j = 3; i+j < sum; j++) {
+			if (j == i || !isPrime(j)) continue;
+			
+			for (int k = 2; i+j+k <= sum; k++) {
+				if (k == i || k == j || !isPrime(k)) continue;
+				
+				if (i + j + k == sum) {
+					*firstPrime = (unsigned long)i;
+					*secondPrime = (unsigned long)j;
+					*thirdPrime = (unsigned long)k;
+					return;
+				}
+			}
+		}
+	}
 }
 
 bool isPrime(unsigned long n) {
