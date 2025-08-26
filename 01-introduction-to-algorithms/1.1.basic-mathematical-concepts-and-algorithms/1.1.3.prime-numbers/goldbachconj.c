@@ -5,15 +5,18 @@
 void printPrimesOfEvenSum(unsigned long n);
 void printUniquePrimesOfSum(unsigned long n);
 void printPrimesOfOddSum(unsigned long n);
+void printPrimesOfEvenDiff(unsigned long n);
 void getPrimesOfSum(unsigned long sum, unsigned long* n, unsigned long* m);
 void getUniquePrimesOfSum(unsigned long sum, unsigned long* firstPrime, unsigned long* secondPrime, unsigned long* thirdPrime, bool unique);
+void getPrimesOfDiff(unsigned long diff, unsigned long* n, unsigned long* m);
 bool isPrime(unsigned long n);
 
 int main() {
-    unsigned long n = 19;
+    unsigned long n = 2;
     printPrimesOfEvenSum(n);
 	printUniquePrimesOfSum(n);
 	printPrimesOfOddSum(n);
+	printPrimesOfEvenDiff(n);
 	
     return 0;
 }
@@ -58,6 +61,18 @@ void printPrimesOfOddSum(unsigned long n) {
 	printf("%d + %d + %d = %d\n", firstNum, secondNum, thirdNum, n);
 }
 
+void printPrimesOfEvenDiff(unsigned long n) {
+	if (n%2 != 0) {
+		printf("Number should be even.\n");
+		return;
+	}
+	
+	unsigned long firstNum, secondNum;
+	getPrimesOfDiff(n, &firstNum, &secondNum);
+	
+	printf("%d = %d - %d\n", n, firstNum, secondNum);
+}
+
 void getPrimesOfSum(unsigned long sum, unsigned long* n, unsigned long* m) {
 	for (unsigned long prime = sum - 2; prime >= 2; prime--)
 		if (isPrime(prime) && isPrime(sum - prime)) {
@@ -91,6 +106,12 @@ void getUniquePrimesOfSum(
 			}
 		}
 	}
+}
+
+void getPrimesOfDiff(unsigned long diff, unsigned long* n, unsigned long* m) {
+	for (unsigned long prime = 2;
+	!isPrime(prime) || !isPrime(diff + prime);
+	prime++, *n = diff+prime, *m = prime);
 }
 
 bool isPrime(unsigned long n) {
