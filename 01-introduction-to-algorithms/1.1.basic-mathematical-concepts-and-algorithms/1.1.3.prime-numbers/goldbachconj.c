@@ -4,14 +4,16 @@
 
 void printPrimesOfEvenSum(unsigned long n);
 void printUniquePrimesOfSum(unsigned long n);
+void printPrimesOfOddSum(unsigned long n);
 void getPrimesOfSum(unsigned long sum, unsigned long* n, unsigned long* m);
-void getUniquePrimesOfSum(unsigned long sum, unsigned long* firstPrime, unsigned long* secondPrime, unsigned long* thirdPrime);
+void getUniquePrimesOfSum(unsigned long sum, unsigned long* firstPrime, unsigned long* secondPrime, unsigned long* thirdPrime, bool unique);
 bool isPrime(unsigned long n);
 
 int main() {
     unsigned long n = 19;
     printPrimesOfEvenSum(n);
 	printUniquePrimesOfSum(n);
+	printPrimesOfOddSum(n);
 	
     return 0;
 }
@@ -37,7 +39,21 @@ void printUniquePrimesOfSum(unsigned long n) {
 	
 	unsigned long firstNum, secondNum, thirdNum, sum;
 	
-	getUniquePrimesOfSum(n, &firstNum, &secondNum, &thirdNum);
+	getUniquePrimesOfSum(n, &firstNum, &secondNum, &thirdNum, true);
+	
+	printf("%d + %d + %d = %d\n", firstNum, secondNum, thirdNum, n);
+}
+
+void printPrimesOfOddSum(unsigned long n) {
+	const int MIN_N = 6;
+	
+	if (n < MIN_N  || n%2 == 0) {
+		printf("Number should be odd and bigger than %d.\n", MIN_N-1);
+		return;
+	}
+	
+	unsigned long firstNum, secondNum, thirdNum;
+	getUniquePrimesOfSum(n, &firstNum, &secondNum, &thirdNum, false);
 	
 	printf("%d + %d + %d = %d\n", firstNum, secondNum, thirdNum, n);
 }
@@ -55,15 +71,16 @@ void getUniquePrimesOfSum(
 	unsigned long sum,
 	unsigned long* firstPrime,
 	unsigned long* secondPrime,
-	unsigned long* thirdPrime) {
-	for (int i = 5; i < sum; i++) {
+	unsigned long* thirdPrime,
+	bool unique) {
+	for (int i = 2; i < sum; i++) {
 		if (!isPrime(i)) continue;
 		
-		for (int j = 3; i+j < sum; j++) {
-			if (j == i || !isPrime(j)) continue;
+		for (int j = 2; i+j < sum; j++) {
+			if (unique && j == i || !isPrime(j)) continue;
 			
 			for (int k = 2; i+j+k <= sum; k++) {
-				if (k == i || k == j || !isPrime(k)) continue;
+				if (unique && (k == i || k == j) || !isPrime(k)) continue;
 				
 				if (i + j + k == sum) {
 					*firstPrime = (unsigned long)i;
